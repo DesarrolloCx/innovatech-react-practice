@@ -1,4 +1,6 @@
-import Card from '../../layouts/Card'
+import Card from '../../layouts/Card';
+
+import ServicesData from '../../data/services'; // Importar arreglo de servicios
 
 const ServicesSection = () => {
     return (
@@ -9,37 +11,33 @@ const ServicesSection = () => {
             <p className="section-description">
                 Lorem ipsum dolor sit, amet consectetur adipisicing elit. Temporibus minus dolor sequi consequatur saepe sunt natus aperiam iste beatae unde perspiciatis doloremque consequuntur aliquam doloribus, rerum totam alias. Quae, ducimus!
             </p>
-            <div className="flex flex-wrap">
-                <div className="w-1/3 p-4">
-                    <Card
-                        title="Compra"
-                        link="#"
-                    >
-                        <p className="text-justify text-base">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        </p>
-                    </Card>
-                </div>
-                <div className="w-1/3 p-4">
-                    <Card
-                        title="Venta"
-                        link="#"
-                    >
-                       <p className="text-justify text-base">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        </p>
-                    </Card>
-                </div>
-                <div className="w-1/3 p-4">
-                    <Card
-                        title="Envio"
-                        link="#"
-                    >
-                       <p className="text-justify text-base">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        </p>
-                    </Card>
-                </div>
+            <div className="flex flex-wrap justify-center">
+                { ServicesData.length < 1 && (
+                    <div className="w-full p-4">
+                        <h4 className="text-red-500 text-center text-xl font-bold">
+                            No hay servicios disponibles en este momento. :(
+                        </h4>
+                    </div>
+                ) }
+
+                { ServicesData?.map(function (item: any, index: any) {
+                    if (item.active === false) {
+                        return null;
+                    }
+
+                    return (
+                        <div className="w-1/3 p-4">
+                            <Card
+                                title={ item.title }
+                                link={ item.link }
+                            >
+                                <p className="text-justify text-base">
+                                    { item.description }
+                                </p>
+                            </Card>
+                        </div>
+                    );
+                }) }
             </div>
         </section>
     );
