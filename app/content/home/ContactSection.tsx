@@ -1,6 +1,8 @@
 // Controla el estado del formulario (si tiene o no errors)
 import { useState } from "react"; 
 
+import CustomInput from "../../components/main/CustomInput";
+
 const ContactSection = () => {
     const [errors, setErrors] = useState<any>([]);
 
@@ -85,83 +87,44 @@ const ContactSection = () => {
                     >
                         <div className="flex flex-wrap">
                             <div className="w-1/2 p-2">
-                                <label className="input-label">Nombre</label>
-                                <input
+                                <CustomInput
                                     type="text"
+                                    label="Nombre"
                                     id="name"
                                     name="name"
-                                    className="input-field"
-                                />
-                                { errors.map(function (error: any, index: any) {
-                                    if (error.field === 'name') {
-                                        return (
-                                            <span>
-                                                { error.message }
-                                            </span>
-                                        );
-                                    }
-
-                                    return null;
-                                }) }
+                                    placeholder="Ingresa tu nombre"
+                                    errors={ errors }
+                                ></CustomInput>
                             </div>
                             <div className="w-1/2 p-2">
-                                <label className="input-label">Apellido</label>
-                                <input
+                                <CustomInput
                                     type="text"
+                                    label="Apellido"
                                     id="lastname"
                                     name="lastname"
-                                    className="input-field"
-                                />
-                                { errors.map(function (error: any, index: any) {
-                                    if (error.field === 'lastname') {
-                                        return (
-                                            <span>
-                                                { error.message }
-                                            </span>
-                                        );
-                                    }
-
-                                    return null;
-                                }) }
+                                    placeholder="Ingresa tu apellido"
+                                    errors={ errors }
+                                ></CustomInput>
                             </div>
                             <div className="w-full p-2">
-                                <label className="input-label">Correo electrónico</label>
-                                <input
+                                <CustomInput
                                     type="email"
+                                    label="Correo electrónico"
                                     id="email"
                                     name="email"
-                                    className="input-field"
-                                />
-                                { errors.map(function (error: any, index: any) {
-                                    if (error.field === 'email') {
-                                        return (
-                                            <span>
-                                                { error.message }
-                                            </span>
-                                        );
-                                    }
-
-                                    return null;
-                                }) }
+                                    placeholder="Ingresa tu correo electrónico"
+                                    errors={ errors }
+                                ></CustomInput>
                             </div>
                             <div className="w-full p-2">
-                                <label className="input-label">Mensaje o comentario</label>
-                                <textarea
+                                <CustomInput
+                                    type="textarea"
+                                    label="Mensaje o comentario"
                                     id="message"
                                     name="message"
-                                    className="input-field input-textarea"
-                                ></textarea>
-                                { errors.map(function (error: any, index: any) {
-                                    if (error.field === 'message') {
-                                        return (
-                                            <span>
-                                                { error.message }
-                                            </span>
-                                        );
-                                    }
-
-                                    return null;
-                                }) }
+                                    placeholder="Escribe tu mensaje o comentario aquí"
+                                    errors={ errors }
+                                ></CustomInput>
                             </div>
                             <div className="w-full p-2">
                                 <div className="text-center">
