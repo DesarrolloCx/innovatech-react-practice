@@ -19,11 +19,15 @@ body {
 }
 
 .navbar-container {
-	@apply flex justify-around;
+	@apply flex flex-wrap;
+}
+
+.navbar-col {
+	@apply p-4 flex justify-around;
 }
 
 .navbar-item {
-	@apply text-lg font-bold uppercase;
+	@apply text-base font-bold uppercase;
 }
 
 .navbar-link {
@@ -58,7 +62,7 @@ body {
 
 /* Tarjetas */
 .card {
-	@apply bg-white border rounded-lg;
+	@apply bg-slate-50 border border-gray-300 rounded-lg;
 }
 
 .card-header,
@@ -104,5 +108,19 @@ body {
 
 .btn-main {
 	@apply bg-blue-950 text-white hover:bg-blue-700;
+}
+
+/* Sidebar */
+.sidebar {
+	@apply text-white w-full h-full fixed top-0 pt-14;
+	background-color: rgba(0, 0, 0, 0.8);
+}
+
+.sidebar-content {
+	@apply p-16 relative h-full text-center; 
+}
+
+.sidebar-item {
+	@apply block text-3xl font-bold mb-20 uppercase;
 }
 

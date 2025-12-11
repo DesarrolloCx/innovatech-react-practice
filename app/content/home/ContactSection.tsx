@@ -1,5 +1,6 @@
 // Controla el estado del formulario (si tiene o no errors)
 import { useState } from "react"; 
+import Swal from "sweetalert2";
 
 import CustomInput from "../../components/main/CustomInput";
 
@@ -48,13 +49,28 @@ const ContactSection = () => {
                 message: 'El mensaje o comentario es obligatorio.'
             });
         }
-        
-        console.log(errorList); // Mostrar los errores en la consola del navegador
 
-        setErrors(errorList); // Actualiza el estado de errores
+        if (errorList.length > 0) {
+            Swal.fire({
+                title: "Adjunta toda la información requerida.",
+                text: "Por favor, revisa los campos del formulario.",
+                icon: "warning",
+            });
 
-        // alert(`Gracias por contactarnos, ${ name }! Hemos recibido tu mensaje.`);
-        // alert('Formulario enviado. Gracias por contactarnos.');
+            setErrors(errorList); // Actualiza el estado de errores
+            return; // Detiene la ejecución si hay errores
+        }
+
+        setErrors([]); // Limpia los errores si no hay
+
+        Swal.fire({
+            title: 'Formulario enviado',
+            text: `Gracias por contactarnos, ${ name }! Hemos envíado tu mensaje.`,
+            icon: 'success',
+        });
+
+        // Limpiamos el formulario
+        event.target.reset();
         
         return;
     };
@@ -72,6 +88,7 @@ const ContactSection = () => {
                         allowFullScreen={false}
                         loading="lazy" 
                         referrerPolicy="no-referrer-when-downgrade"
+                        data-aos="zoom-in"
                     ></iframe>
                 </div>
                 <div className="w-2/5 p-4">
