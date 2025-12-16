@@ -1,11 +1,18 @@
 // Controla el estado del formulario (si tiene o no errors)
-import { useState } from "react"; 
+import axios from "axios";
 import Swal from "sweetalert2";
+import { useState, useEffect } from "react"; 
+
+import { getOrDeleteRequest } from "../../utils/utils";
 
 import CustomInput from "../../components/main/CustomInput";
 
 const ContactSection = () => {
     const [errors, setErrors] = useState<any>([]);
+    const [countries, setCountries] = useState<any>([]);
+    const [states, setStates] = useState<any>([]);
+    const [cities, setCities] = useState<any>([]);
+    const [districts, setDistricts] = useState<any>([]);
 
     const handleSubmit = (event: any) => {
         // Previene la recarga de la página al enviar el formulario
@@ -73,7 +80,77 @@ const ContactSection = () => {
         event.target.reset();
         
         return;
+    };  
+
+    const getCountries = async () => {
+        let url = "https://chambaticon.ticongle.com/backend/public/api/country";
+
+        try {
+            let response = await axios.get(url);
+
+            if ((response.data).length > 0) {
+                setCountries(response.data);
+            } else {
+                setCountries([]);
+            }
+        } catch (error) {
+            console.log("Algo salió mal");
+        }
     };
+
+    const getStates = async () => {
+        let response = await getOrDeleteRequest("state/3", "GET");
+
+        if (response.type === "error") {
+            setStates([]);
+            return;
+        }
+
+        setStates(response.data);
+        return;
+    };
+
+    const getCities = async (state: any) => {
+        if (!state) return; // Detenemos si no viene el valor 
+
+        let url = `https://chambaticon.ticongle.com/backend/public/api/city/${state}`;
+        // let url = "https://chambaticon.ticongle.com/backend/public/api/city/" + state;
+
+        try {
+            let response = await axios.get(url);
+
+            if ((response.data).length > 0) {
+                setCities(response.data);
+            } else {
+                setCities([]);
+            }
+        } catch (error) {
+            console.log("Algo salió mal");
+        }
+    };
+
+    const getDistricts = async (city: any) => {
+        if (!city) return; // Detenemos si no viene el valor 
+
+        let url = `https://chambaticon.ticongle.com/backend/public/api/district/${city}`;
+
+        try {
+            let response = await axios.get(url);
+
+            if ((response.data).length > 0) {
+                setDistricts(response.data);
+            } else {
+                setDistricts([]);
+            }
+        } catch (error) {
+            console.log("Algo salió mal");
+        }
+    };
+
+    // Hace todas las peticiones antes de renderizar (página)
+    useEffect(function() {
+        getStates();
+    }, []);
 
     return (
         <section className="section">
@@ -120,6 +197,60 @@ const ContactSection = () => {
                                     id="lastname"
                                     name="lastname"
                                     placeholder="Ingresa tu apellido"
+                                    errors={ errors }
+                                ></CustomInput>
+                            </div>
+                            {/* <div className="w-full p-2">
+                                <CustomInput
+                                    type="select"
+                                    label="País de residencia"
+                                    id="country"
+                                    name="country"
+                                    placeholder="Selecciona tu país de residencia"
+                                    options={ countries } // Pasamos lista de información
+                                    errors={ errors }
+                                ></CustomInput>
+                            </div> */}
+                            <div className="w-1/2 p-2">
+                                <CustomInput
+                                    type="select"
+                                    label="Departamento de residencia"
+                                    id="state"
+                                    name="state"
+                                    placeholder="Selecciona tu departamento de residencia"
+                                    options={ states } // Pasamos lista de información
+                                    errors={ errors }
+                                    onChange={ function(e: any) {
+                                        let stateId = e.target.value;
+
+                                        getCities(stateId);
+                                    } }
+                                ></CustomInput>
+                            </div>
+                            <div className="w-1/2 p-2">
+                                <CustomInput
+                                    type="select"
+                                    label="Municipio de residencia"
+                                    id="city"
+                                    name="city"
+                                    placeholder="Selecciona tu municipio de residencia"
+                                    options={ cities } // Pasamos lista de información
+                                    errors={ errors }
+                                    onChange={ function(e: any) {
+                                        let cityId = e.target.value;
+
+                                        getDistricts(cityId);
+                                    } }
+                                ></CustomInput>
+                            </div>
+                            <div className="w-full p-2">
+                                <CustomInput
+                                    type="select"
+                                    label="Distrito de residencia"
+                                    id="district"
+                                    name="district"
+                                    placeholder="Selecciona tu distrito de residencia"
+                                    options={ districts } // Pasamos lista de información
                                     errors={ errors }
                                 ></CustomInput>
                             </div>

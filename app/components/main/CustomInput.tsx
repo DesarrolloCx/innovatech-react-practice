@@ -1,6 +1,16 @@
 
-
-const CustomInput = ({ type, id, name, placeholder, required = false, label, errors }: any) => {
+const CustomInput = ({ 
+    type, 
+    id, 
+    name, 
+    placeholder,
+    required = false, 
+    label, 
+    errors, 
+    options = [],
+    onChange,
+}: any) => {
+    console.log("Options en CustomInput:", options);
     return (
         <>
             <label className="input-label">
@@ -14,6 +24,9 @@ const CustomInput = ({ type, id, name, placeholder, required = false, label, err
                     className="input-field input-textarea"
                     placeholder={ placeholder || "" } // if (placeholder === null) ? "" : placeholder;
                     required={ required }
+                    onChange={ function(e: any) {
+                        onChange(e);
+                    } }
                 ></textarea>
             ) }
 
@@ -25,7 +38,35 @@ const CustomInput = ({ type, id, name, placeholder, required = false, label, err
                     className="input-field"
                     placeholder={ placeholder || "" } // if (placeholder === null) ? "" : placeholder;
                     required={ required }
+                    onChange={ function(e: any) {
+                        onChange(e);
+                    } }
                 />
+            ) }
+
+            { type === "select" && (
+                <select
+                    id={ id || "" } // if (id === null) ? "" : id;
+                    name={ name || "" } // if (name === null) ? "" : name;
+                    className="input-field"
+                    required={ required }
+                    onChange={ function(e: any) {
+                        onChange(e);
+                    } }
+                >
+                    <option value="">[Selecciona una opción]</option>
+                    { options.length > 0 && (
+                        <>
+                            { options.map(function(item: any) {
+                                return (
+                                    <option value={ item.id }>
+                                        { item.name }
+                                    </option>
+                                );
+                            }) }
+                        </>
+                    ) }
+                </select>
             ) }
 
             { errors.map(function (error: any, index: any) {
