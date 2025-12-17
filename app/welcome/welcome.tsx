@@ -6,6 +6,7 @@ import Sidebar from '../design/Sidebar';
 import Header from '../components/main/header';
 import ServicesSection from '../content/home/ServicesSection';
 import ContactSection from '../content/home/ContactSection';
+import BlogSection from '../content/home/BlogSection';
 
 import 'aos/dist/aos.css';
 
@@ -34,6 +35,9 @@ export function Welcome() {
 
 				{/* Sección de Servicios */}
 				<ServicesSection></ServicesSection>
+
+				{/* Sección de blog */}
+				<BlogSection></BlogSection>
 
 				{/* Sección de contacto */}
 				<ContactSection></ContactSection>

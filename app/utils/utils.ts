@@ -5,10 +5,11 @@ import axios from "axios";
 export const getOrDeleteRequest = async (
     url: any, 
     method: any, // GET o DELETE
+    origin: any = "https://chambaticon.ticongle.com/backend/public/api/",
 ) => {
     try {
         // Genera la URL completa
-        let uri = "https://chambaticon.ticongle.com/backend/public/api/" + url;
+        let uri = origin + url;
 
         // Configuración de la petición hacia el backend
         let config = {
@@ -42,9 +43,10 @@ export const postOrPutRequest = async (
     url: any,
     method: any, // POST o PUT
     body: any, // Data to send
+    origin: any = "https://chambaticon.ticongle.com/backend/public/api/",
 ) => {
     try {
-        let uri = "https://chambaticon.ticongle.com/backend/public/api/" + url;
+        let uri = origin + url;
 
         let config = {
             headers: {
