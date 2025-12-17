@@ -10,7 +10,6 @@ const CustomInput = ({
     options = [],
     onChange,
 }: any) => {
-    console.log("Options en CustomInput:", options);
     return (
         <>
             <label className="input-label">

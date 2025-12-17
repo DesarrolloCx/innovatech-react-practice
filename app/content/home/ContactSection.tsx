@@ -3,7 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useState, useEffect } from "react"; 
 
-import { getOrDeleteRequest } from "../../utils/utils";
+import { getOrDeleteRequest, postOrPutRequest } from "../../utils/utils";
 
 import CustomInput from "../../components/main/CustomInput";
 
@@ -13,6 +13,30 @@ const ContactSection = () => {
     const [states, setStates] = useState<any>([]);
     const [cities, setCities] = useState<any>([]);
     const [districts, setDistricts] = useState<any>([]);
+
+    const sendData = async (info: any) => {
+        let response = await postOrPutRequest(
+            "contact", // URL
+            "POST", // Método
+            info // Información a enviar
+        );
+
+        if (response.type === "error") {   
+            Swal.fire({
+                title: "Error al enviar el formulario", 
+                text: "Por favor, intenta nuevamente más tarde. Hemos tenido un inconveniente con el servidor.",
+                icon: "warning",
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: "Formulario enviado",
+            text: "Gracias por contactarnos. Hemos recibido tu mensaje y procederemos a responderte pronto.",
+            icon: "success",
+        });
+        return;
+    };
 
     const handleSubmit = (event: any) => {
         // Previene la recarga de la página al enviar el formulario
@@ -26,34 +50,61 @@ const ContactSection = () => {
         let email = formData.get('email'); // Obtiene el valor del campo 'email'
         let message = formData.get('message'); // Obtiene el valor del campo 'message'
 
+        // Nuevos campos (17-12-2025)
+        let state = formData.get('state'); // Obtiene el valor del campo 'state'
+        let city = formData.get('city'); // Obtiene el valor del campo 'city'
+        let district = formData.get('district'); // Obtiene el valor del campo 'district'
+
         let errorList = []; // Arreglo para almacenar los errores
 
         if (name === "") {
             // Agregar un error al arreglo de errores
             errorList.push({
                 field: 'name',
-                message: 'El nombre es obligatorio.'
+                message: 'El nombre es requerido.'
             });
         }
 
         if (lastname === "") {
             errorList.push({
                 field: 'lastname',
-                message: 'El apellido es obligatorio.'
+                message: 'El apellido es requerido.'
             });
         }
 
         if (email === "") {
             errorList.push({
                 field: 'email',
-                message: 'El correo electrónico es obligatorio.'
+                message: 'El correo electrónico es requerido.'
             });
         }
 
         if (message === "") {
             errorList.push({
                 field: 'message',
-                message: 'El mensaje o comentario es obligatorio.'
+                message: 'El mensaje o comentario es requerido.'
+            });
+        }
+
+        // Nuevos campos (17-12-2025)
+        if (state === "") {
+            errorList.push({
+                field: 'state',
+                message: 'El departamento de residencia es requerido.'
+            });
+        }
+
+        if (city === "") {
+            errorList.push({
+                field: 'city',
+                message: 'El municipio de residencia es requerido.'
+            });
+        }
+
+        if (district === "") {
+            errorList.push({
+                field: 'district',
+                message: 'El distrito de residencia es requerido.'
             });
         }
 
@@ -78,19 +129,40 @@ const ContactSection = () => {
 
         // Limpiamos el formulario
         event.target.reset();
+
+        // Formateando la información para ser enviada (JSON)
+        let info = {
+            "name": name,
+            "lastname": lastname,
+            "email": email,
+            "message": message,
+            "state": state,
+            "city": city,
+            "district": district,
+        };
+        // Revisando información enviada
+        console.log(info);
+
+        sendData(info); // Enviando la información al servidor
         
         return;
     };  
 
     const getCountries = async () => {
+        // Enlace al que se hace la petición
         let url = "https://chambaticon.ticongle.com/backend/public/api/country";
 
+        // Estructura para manejar el error
         try {
+            // Realizamos la petición
             let response = await axios.get(url);
 
+            // Validamos si la respuesta trae datos
             if ((response.data).length > 0) {
+                // Definimos la información en el hook
                 setCountries(response.data);
             } else {
+                // Establece el hook vacío
                 setCountries([]);
             }
         } catch (error) {
@@ -103,48 +175,39 @@ const ContactSection = () => {
 
         if (response.type === "error") {
             setStates([]);
-            return;
-        }
+            return; // Detener la ejecución
+        } 
 
         setStates(response.data);
-        return;
+        return; // Detener la función
     };
 
     const getCities = async (state: any) => {
         if (!state) return; // Detenemos si no viene el valor 
 
-        let url = `https://chambaticon.ticongle.com/backend/public/api/city/${state}`;
-        // let url = "https://chambaticon.ticongle.com/backend/public/api/city/" + state;
+        let response = await getOrDeleteRequest(`city/${state}`, "GET");
 
-        try {
-            let response = await axios.get(url);
-
-            if ((response.data).length > 0) {
-                setCities(response.data);
-            } else {
-                setCities([]);
-            }
-        } catch (error) {
-            console.log("Algo salió mal");
+        if (response.type === "error") {
+            setCities([]);        
+            return; // Detener la ejecución
         }
+
+        setCities(response.data);
+        return;
     };
 
     const getDistricts = async (city: any) => {
         if (!city) return; // Detenemos si no viene el valor 
+        
+        let response = await getOrDeleteRequest(`district/${city}`, "GET");
 
-        let url = `https://chambaticon.ticongle.com/backend/public/api/district/${city}`;
-
-        try {
-            let response = await axios.get(url);
-
-            if ((response.data).length > 0) {
-                setDistricts(response.data);
-            } else {
-                setDistricts([]);
-            }
-        } catch (error) {
-            console.log("Algo salió mal");
+        if (response.type === "error") {
+            setDistricts([]);
+            return; // Detener la ejecución
         }
+
+        setDistricts(response.data);
+        return;
     };
 
     // Hace todas las peticiones antes de renderizar (página)

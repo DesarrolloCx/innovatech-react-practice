@@ -37,3 +37,39 @@ export const getOrDeleteRequest = async (
         };
     }
 };
+
+export const postOrPutRequest = async (
+    url: any,
+    method: any, // POST o PUT
+    body: any, // Data to send
+) => {
+    try {
+        let uri = "https://chambaticon.ticongle.com/backend/public/api/" + url;
+
+        let config = {
+            headers: {
+                'Content-Type': (method === "POST") ? "multipart/form-data" : "application/json",
+                'Accept': 'application/json',
+            }
+        };
+        console.log(config, "Configuración de la petición");
+        let response = await axios({
+            method: method, // POST o PUT
+            url: uri, // URL completa
+            headers: config.headers, // Encabezados de la petición
+            data: body, // Información a enviar
+        });
+
+        return {
+            type: "success",
+            message: "Petición exitosa",
+            data: response.data,
+        };
+    } catch (error) {
+        return {
+            type: "error",
+            message: "Error en la petición",
+            data: error,
+        };
+    }
+};
